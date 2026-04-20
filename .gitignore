@@ -1,0 +1,47 @@
+# Database files
+data/
+*.db
+*.sqlite
+
+# Environment variables — NEVER commit these
+.env
+.env.*
+
+# Docker volumes
+postgres_data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Node / Frontend
+services/frontend/node_modules/
+services/frontend/dist/
+services/frontend/.vite/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Virtual environments
+venv/
+.venv/

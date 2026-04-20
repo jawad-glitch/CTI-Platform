@@ -1,0 +1,112 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: cti
+      POSTGRES_USER: cti
+      POSTGRES_PASSWORD: cti_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+
+  rss-ingestor:
+    build: /home/dell/CTI-project/services/RSS-ingestor
+    volumes:
+      - /home/dell/CTI-project/data:/data
+    environment:
+      - DB_PATH=/data/cti.db
+      - POLL_INTERVAL=300
+      - OTX_API_KEY=0213614b36214d8c51e0a3b713a706af5505c2e3357688c3659f941967e783c6
+    dns:
+      - 8.8.4.4
+      - 8.8.8.8
+    restart: unless-stopped
+
+  graph-api:
+    build: /home/dell/CTI-project/services/graph-api
+    volumes:
+      - /home/dell/CTI-project/data:/data
+    environment:
+      - SQLITE_PATH=/data/cti.db
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cti
+      - POSTGRES_USER=cti
+      - POSTGRES_PASSWORD=cti_password
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+  nlp-enricher:
+    build: /home/dell/CTI-project/services/nlp-enricher
+    volumes:
+      - /home/dell/CTI-project/data:/data
+    environment:
+      - SQLITE_PATH=/data/cti.db
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cti
+      - POSTGRES_USER=cti
+      - POSTGRES_PASSWORD=cti_password
+    depends_on:
+      - postgres
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
+
+  decision-engine:
+    build: /home/dell/CTI-project/services/decision-engine
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cti
+      - POSTGRES_USER=cti
+      - POSTGRES_PASSWORD=cti_password
+    depends_on:
+      - postgres
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
+
+  taxii-server:
+    build: /home/dell/CTI-project/services/taxii-server
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cti
+      - POSTGRES_USER=cti
+      - POSTGRES_PASSWORD=cti_password
+      - PUBLIC_API_KEY=public123
+      - PARTNER_API_KEY=partner456
+      - INTERNAL_API_KEY=internal789
+    ports:
+      - "9000:9000"
+    depends_on:
+      - postgres
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
+
+  feedback-loop:
+    build: /home/dell/CTI-project/services/feedback-loop
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=cti
+      - POSTGRES_USER=cti
+      - POSTGRES_PASSWORD=cti_password
+      - CYCLE_INTERVAL=86400
+    depends_on:
+      - postgres
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
