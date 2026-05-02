@@ -1,6 +1,6 @@
 # CTI-Project
 
-> An automated Cyber Threat Intelligence platform that collects, enriches, scores, and disseminates threat intelligence — built from scratch without any pre-built CTI frameworks.
+> An automated Cyber Threat Intelligence platform that collects, enriches, scores, and disseminates threat intelligence built from scratch without any pre-built CTI frameworks.
 
 ---
 
